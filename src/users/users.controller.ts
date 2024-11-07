@@ -13,7 +13,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Roles(Role.ADMIN, Role.EDITOR)
+  @Roles(Role.ADMIN)
   @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
