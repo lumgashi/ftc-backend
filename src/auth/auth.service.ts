@@ -9,6 +9,7 @@ import refreshJwtConfig from './config/refresh-jwt.config';
 import { ConfigType } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { CurrentUser } from './types/current-user.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
     private userService: UsersService,
     private readonly prisma: PrismaService,
     private jwtService: JwtService,
+    private eventEmitter: EventEmitter2,
   ) {}
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.userService.findByEmail(email);
@@ -57,13 +59,14 @@ export class AuthService {
         password: hashedPassword,
       },
     });
+    this.eventEmitter.emit('user.created', user);
     return user;
   }
 
   async refreshToken(userId: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    console.log('well here')
+    console.log('well here');
     await this.userService.updateHashedRefreshedToken(
       userId,
       hashedRefreshToken,
