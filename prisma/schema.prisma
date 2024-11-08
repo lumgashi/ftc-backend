@@ -1,6 +1,5 @@
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextIndex", "omitApi"]
 }
 
@@ -9,33 +8,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  firstName  String
-  lastName   String
-  phoneNumber String? @unique
-  email String @unique
-  password String
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName          String
+  lastName           String
+  phoneNumber        String?
+  email              String   @unique
+  password           String
   hashedRefreshToken String?
-  role Role @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role               Role     @default(USER)
+  addresses          Address[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   @@map("users")
 }
 
 
+model Address {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  street           String
+  city             String
+  country          String
+  zip              String
+  user             User     @relation(fields: [userId], references: [id])
+  userId           String   @db.ObjectId
+  isDefaultAddress Boolean?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("addresses")
+}
+
 model Category {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String @unique
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
   description String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("categories")
 }
-
 
 enum Role {
   USER
