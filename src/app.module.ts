@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AddressesModule } from './addresses/addresses.module';
 import { CartModule } from './cart/cart.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     AddressesModule,
     CartModule,
     EventEmitterModule.forRoot(),
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
