@@ -13,7 +13,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorator';
 
-//@Roles(Role.ADMIN)
+@Roles(Role.ADMIN)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

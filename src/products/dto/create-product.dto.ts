@@ -1,4 +1,10 @@
-import { IsEAN, IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
+import {
+  IsEAN,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+} from 'class-validator';
 
 // create a dto for product based on schema model
 export class CreateProductDto {
@@ -14,8 +20,9 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   category: string;
-  //@IsEAN()
-  @IsString()
+
+  @IsEAN()
+  // @IsString()
   @IsNotEmpty()
   ean: string;
 
