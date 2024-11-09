@@ -9,13 +9,21 @@ import { REQUEST } from '@nestjs/core';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RequestWithUser } from 'src/utils/types';
 import { Prisma, Product } from '@prisma/client';
-
+import { S3 } from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class ProductsService {
+  private readonly s3Client;
   constructor(
     private readonly prisma: PrismaService,
     @Inject(REQUEST) private request: RequestWithUser,
-  ) {}
+    private readonly config: ConfigService,
+  ) {
+    this.s3Client = new S3({
+      accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
+      secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
+    });
+  }
   async create(createProductDto: CreateProductDto): Promise<Product> {
     try {
       const productDetails =
@@ -31,6 +39,54 @@ export class ProductsService {
           productDetails,
         },
       });
+      return product;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async uploadImages(files: Array<Express.Multer.File>, id: string) {
+    console.log('id', id);
+    const uploadedImages = [];
+    let uploadedFile;
+    try {
+      // async for loop to upload each file
+      for (const file of files) {
+        uploadedFile = await this.s3Client
+          .upload({
+            Bucket: this.config.get('AWS_BUCKET_NAME'),
+            Body: file.buffer,
+            Key: file.originalname,
+            ACL: 'public-read',
+            ContentDisposition: 'inline',
+          })
+          .promise();
+        console.log('uploadedFile', uploadedFile);
+
+        uploadedImages.push(uploadedFile.Location);
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Could not upload images',
+        error.message,
+      );
+    }
+
+    try {
+      // const names = files.map((file) => file.originalname);
+      const product = await this.prisma.product.update({
+        where: {
+          id,
+        },
+        data: {
+          images: { push: uploadedImages },
+          backgroundImage: uploadedImages[0],
+        },
+      });
+      if (!product) {
+        throw new InternalServerErrorException('Product could not be updated');
+      }
+
       return product;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
@@ -76,7 +132,7 @@ export class ProductsService {
     }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  update(id: string, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} ${updateProductDto} product`;
   }
 

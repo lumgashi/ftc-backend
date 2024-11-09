@@ -43,10 +43,13 @@ model Product {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique
   ean         String   @unique
+  slug        String   @unique
   description String
   price       Float
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  String   @db.ObjectId
+  images      String[]
+  backgroundImage String?
   productDetails Json? 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

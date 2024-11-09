@@ -21,6 +21,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   category: string;
 
+  @IsString()
+  @IsNotEmpty()
+  slug: string;
+
   @IsEAN()
   // @IsString()
   @IsNotEmpty()
