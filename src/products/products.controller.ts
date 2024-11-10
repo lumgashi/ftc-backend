@@ -18,7 +18,7 @@ import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorator';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
-//@Roles(Role.ADMIN)
+@Roles(Role.ADMIN)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
