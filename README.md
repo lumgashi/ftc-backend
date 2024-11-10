@@ -27,7 +27,7 @@
   <li><strong>Users</strong> can browse through the products and place orders.</li>
   <li><strong>Admins</strong> can manage products and maintain the application.</li>
 </ul>
-<p>The project features a well-structured codebase with JWT and Google OAuth authentication for secure access, enabling a seamless user experience for both customers and administrators.</p>
+<p>The project features a well-structured codebase with JWT and Google OAuth authentication for secure access, enabling a seamless user experience for both customers and administrators. Product images are securely stored in AWS S3, providing reliable storage for media assets.</p>
 
 <h2 id="features">Features</h2>
 <ul>
@@ -45,6 +45,7 @@
   </li>
   <li><strong>Order Management</strong>: Allows users to create orders and view order history.</li>
   <li><strong>Product Management</strong>: Enables admins to add, update, and delete products within the application.</li>
+  <li><strong>Image Storage</strong>: Product images are stored in AWS S3 for secure and scalable media storage.</li>
 </ul>
 
 <h2 id="tech-stack">Tech Stack</h2>
@@ -54,6 +55,7 @@
   <li><strong>ORM</strong>: <a href="https://www.prisma.io/">Prisma</a></li>
   <li><strong>Containerization</strong>: <a href="https://www.docker.com/">Docker</a></li>
   <li><strong>Authentication</strong>: JWT & Google OAuth</li>
+  <li><strong>File Storage</strong>: AWS S3</li>
 </ul>
 
 <h2 id="getting-started">Getting Started</h2>
@@ -109,6 +111,12 @@ JWT_EXPIRATION="3600s"
 # Google OAuth
 GOOGLE_CLIENT_ID="&lt;your_google_client_id&gt;"
 GOOGLE_CLIENT_SECRET="&lt;your_google_client_secret&gt;"
+
+# AWS S3
+AWS_ACCESS_KEY_ID="&lt;your_aws_access_key_id&gt;"
+AWS_SECRET_ACCESS_KEY="&lt;your_aws_secret_access_key&gt;"
+AWS_REGION="&lt;your_aws_region&gt;"
+AWS_BUCKET_NAME="&lt;your_s3_bucket_name&gt;"
 </code></pre>
 
 <h2 id="api-endpoints">API Endpoints</h2>
