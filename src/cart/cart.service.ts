@@ -9,6 +9,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { REQUEST } from '@nestjs/core';
 import { RequestWithUser } from 'src/utils/types';
 import { Cart, User } from '@prisma/client';
+import { connect } from 'http2';
 
 @Injectable()
 export class CartService {
@@ -56,7 +57,60 @@ export class CartService {
     }
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
+  async update(updateCartDto: UpdateCartDto) {
+    const userId = this.request.user.id;
+    const userCart = await this.prisma.cart.findUnique({
+      where: {
+        userId,
+      },
+    });
+    try {
+      const { actionType } = updateCartDto;
+      if (actionType === 'emptyCart') {
+        const updatedCart = await this.prisma.cart.update({
+          where: {
+            id: userCart.id,
+          },
+          data: {
+            totalPrice: {
+              set: 0,
+            },
+            cartItems: {
+              deleteMany: {},
+            },
+          },
+        });
+        return updatedCart;
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Could not empty cart',
+        error.message,
+      );
+    }
+  }
+
+  @OnEvent('cartItem.created')
+  async updateCart(updateCartDto: UpdateCartDto) {
+    try {
+      const { actionType, cartItem, quantity } = updateCartDto;
+      if (actionType === 'add') {
+        const incomingProductsPrices = cartItem?.product.price * quantity;
+        const updatedCart = await this.prisma.cart.update({
+          where: {
+            id: cartItem.cartId,
+          },
+          data: {
+            totalPrice: {
+              increment: incomingProductsPrices, // Corrected spelling here
+            },
+          },
+        });
+
+        return updatedCart;
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

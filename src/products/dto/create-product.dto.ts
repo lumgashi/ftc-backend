@@ -32,4 +32,7 @@ export class CreateProductDto {
 
   @IsObject()
   productDetails?: any;
+
+  @IsNumber()
+  stock: number;
 }

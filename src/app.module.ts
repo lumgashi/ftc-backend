@@ -9,6 +9,7 @@ import { AddressesModule } from './addresses/addresses.module';
 import { CartModule } from './cart/cart.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ProductsModule } from './products/products.module';
+import { CartItemsModule } from './cart-items/cart-items.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProductsModule } from './products/products.module';
     CartModule,
     EventEmitterModule.forRoot(),
     ProductsModule,
+    CartItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
