@@ -11,6 +11,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ProductsModule } from './products/products.module';
 import { CartItemsModule } from './cart-items/cart-items.module';
 import { OrdersModule } from './orders/orders.module';
+import { PaginateModule } from './paginate/paginate.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { OrdersModule } from './orders/orders.module';
     ProductsModule,
     CartItemsModule,
     OrdersModule,
+    PaginateModule,
   ],
   controllers: [AppController],
   providers: [AppService],
